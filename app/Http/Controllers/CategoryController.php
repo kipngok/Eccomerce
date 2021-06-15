@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Http\Resources\CategoryResource;
+use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
@@ -15,6 +17,9 @@ class CategoryController extends Controller
     public function index()
     {
         //
+        $categories = Category::all();
+        return response(['categories' => CategoryResource::collection($categories), 'message' => 'Retrieved successfully']);
+
     }
 
     /**
@@ -36,6 +41,18 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         //
+        $input = $request->all(); 
+         $validator = Validator::make($input, [
+            'name'=>'required',
+            'slug'=>'required',
+            'order'=>'required',
+                ]);
+         if ($validator->fails()) {
+            return response(['error' => $validator->errors(), 'Validation Error']);
+         }
+         $category = Category::create($input);
+         return response()->json($category);
+        
     }
 
     /**
@@ -47,6 +64,7 @@ class CategoryController extends Controller
     public function show(Category $category)
     {
         //
+        return response()->json($category);
     }
 
     /**
@@ -70,6 +88,8 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category)
     {
         //
+        $category->update($request->all());
+         return response()->json($category);
     }
 
     /**
@@ -81,5 +101,7 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         //
+        $category->delete();
+        return response(['message' => 'Deleted']);
     }
 }

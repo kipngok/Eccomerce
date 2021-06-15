@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Http\Resources\ProductResource;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
@@ -15,6 +17,8 @@ class ProductController extends Controller
     public function index()
     {
         //
+        $products = Product::all();
+        return response(['products' => ProductResource::collection($products), 'message' => 'Retrieved successfully']);
     }
 
     /**
@@ -35,7 +39,25 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //'name', 'slug', 'meta', 'price', 'sale_price', 'description', 'featured', 'sub_category_id', 'category_id', 'status'
+
+         $input = $request->all(); 
+         $validator = Validator::make($input, [
+            'name'=>'required',
+            'slug'=>'required',
+            'meta'=>'required',
+            'price'=>'required',
+            'sale_price'=>'required',
+            'description'=>'required',
+            'featured'=>'required',
+            'status'=>'required',
+                 ]);
+         if ($validator->fails()) {
+            return response(['error' => $validator->errors(), 'Validation Error']);
+         }
+         $product = Product::create($input);
+         return response()->json($product);
+
     }
 
     /**
@@ -47,6 +69,7 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         //
+        return response()->json($product);
     }
 
     /**
@@ -70,6 +93,8 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         //
+        $product->update($request->all());
+         return response()->json($product);
     }
 
     /**
@@ -81,5 +106,7 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         //
+        $product->delete();
+        return response(['message' => 'Deleted']);
     }
 }

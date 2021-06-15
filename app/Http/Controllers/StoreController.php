@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Store;
 use Illuminate\Http\Request;
+use App\Http\Resources\StoreResource;
+use Illuminate\Support\Facades\Validator;
 
 class StoreController extends Controller
 {
@@ -15,6 +17,8 @@ class StoreController extends Controller
     public function index()
     {
         //
+         $stores = Store::all();
+         return response(['stores' => StoreResource::collection($stores), 'message' => 'Retrieved successfully']);
     }
 
     /**
@@ -36,6 +40,22 @@ class StoreController extends Controller
     public function store(Request $request)
     {
         //
+        $input = $request->all(); 
+         $validator = Validator::make($input, [
+            'name'=>'required',
+            'description'=>'required',
+            'contact_person'=>'required',
+            'contact-person_phone'=>'required',
+            'contact_person_email'=>'required',
+            'place_id'=>'required',
+            'longitude'=>'required',
+            'latitude'=>'required',
+                 ]);
+         if ($validator->fails()) {
+            return response(['error' => $validator->errors(), 'Validation Error']);
+         }
+         $store = Store::create($input);
+         return response()->json($store);
     }
 
     /**
@@ -47,6 +67,7 @@ class StoreController extends Controller
     public function show(Store $store)
     {
         //
+         return response()->json($store);
     }
 
     /**
@@ -70,6 +91,8 @@ class StoreController extends Controller
     public function update(Request $request, Store $store)
     {
         //
+        $store->update($request->all());
+         return response()->json($store);
     }
 
     /**
@@ -81,5 +104,7 @@ class StoreController extends Controller
     public function destroy(Store $store)
     {
         //
+        $store->delete();
+        return response(['message' => 'Deleted']);
     }
 }

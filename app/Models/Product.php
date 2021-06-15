@@ -18,12 +18,15 @@ class Product extends Model
     public function sub_category_id(){
     	return $this->hasOne('App\Models\SubCategory','id','sub_category_id');
     }
+
      public function orderitems(){
     	return $this->hasMany('App\Models\OrderItem','product_id','id');
     }
+
     public function reviews(){
     	return $this->hasMany('App\Models\Review','product_id','id');
     }
+    
      public function storeproducts(){
     	return $this->hasMany('App\Models\StoreProduct','product_id','id');
     }

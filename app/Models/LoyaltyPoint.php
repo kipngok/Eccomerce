@@ -9,7 +9,7 @@ class LoyaltyPoint extends Model
 {
     use HasFactory;
     protected $table='loyalty_points';
-    protected $fillable=['user_id', 'points', 'date', 'order_id', 'order_amount'];
+    protected $fillable= ['user_id', 'points', 'date', 'order_id', 'order_amount'];
 
     public function user(){
     	return $this->hasOne('App\Models\User','id','user_id');

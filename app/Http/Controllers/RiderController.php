@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Rider;
 use Illuminate\Http\Request;
+use App\Http\Resources\RiderResource;
+use Illuminate\Support\Facades\Validator;
 
 class RiderController extends Controller
 {
@@ -15,6 +17,9 @@ class RiderController extends Controller
     public function index()
     {
         //
+
+         $riders = Rider::all();
+        return response(['riders' => RiderResource::collection($riders), 'message' => 'Retrieved successfully']);
     }
 
     /**
@@ -36,6 +41,21 @@ class RiderController extends Controller
     public function store(Request $request)
     {
         //
+        $input = $request->all(); 
+         $validator = Validator::make($input, [
+             'user_id'=>'required',
+             'reg_no'=>'required',
+             'type'=>'required',
+             'status'=>'required',
+             'place_id'=>'required',
+             'longitude'=>'required',
+             'latitude'=>'required'
+                 ]);
+         if ($validator->fails()) {
+            return response(['error' => $validator->errors(), 'Validation Error']);
+         }
+         $rider = Rider::create($input);
+         return response()->json($rider);
     }
 
     /**
@@ -47,6 +67,7 @@ class RiderController extends Controller
     public function show(Rider $rider)
     {
         //
+         return response()->json($rider);
     }
 
     /**
@@ -70,6 +91,8 @@ class RiderController extends Controller
     public function update(Request $request, Rider $rider)
     {
         //
+         $rider->update($request->all());
+         return response()->json($rider);
     }
 
     /**
@@ -81,5 +104,7 @@ class RiderController extends Controller
     public function destroy(Rider $rider)
     {
         //
+        $rider->delete();
+        return response(['message' => 'Deleted']);
     }
 }

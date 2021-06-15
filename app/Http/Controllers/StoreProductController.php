@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\StoreProduct;
 use Illuminate\Http\Request;
+use App\Http\Resources\StoreProductResource;
+use Illuminate\Support\Facades\Validator;
 
 class StoreProductController extends Controller
 {
@@ -36,6 +38,23 @@ class StoreProductController extends Controller
     public function store(Request $request)
     {
         //
+         $input = $request->all(); 
+         $validator = Validator::make($input, [
+            'store_id'=>'required',
+            'product_id'=>'required',
+            'quantity'=>'required',
+                 ]);
+         if ($validator->fails()) {
+            return response(['error' => $validator->errors(), 'Validation Error']);
+         }
+         $storeProduct = StoreProduct::create($input);
+         return response()->json($storeProduct);
+
+
+
+
+
+
     }
 
     /**
