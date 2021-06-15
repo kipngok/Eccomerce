@@ -19,10 +19,10 @@ class CreateDeliveriesTable extends Migration
             $table->integer('rider_id');
             $table->date('scheduled_date');
             $table->time('scheduled_time');
-            $table->time('scheduled_by');
+            $table->string('scheduled_by');
             $table->string('status');
             $table->string('dispatched_by');
-            $table->date('dispatched_at');
+            $table->string('dispatched_at');
             $table->time('delivery_time');
             $table->date('delivery_date');
             $table->string('notes',1000)->nullable();

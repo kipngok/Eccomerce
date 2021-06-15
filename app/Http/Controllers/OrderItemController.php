@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
+use App\Http\Resources\OrderItemResource;
+use Illuminate\Support\Facades\Validator;
 
 class OrderItemController extends Controller
 {
@@ -15,7 +17,10 @@ class OrderItemController extends Controller
     public function index()
     {
         //
+        $orderItems = OrderItem::all();
+        return response(['orderItems' => OrderItemResource::collection($orderItems), 'message' => 'Retrieved successfully']);
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -36,6 +41,18 @@ class OrderItemController extends Controller
     public function store(Request $request)
     {
         //
+         $input = $request->all(); 
+         $validator = Validator::make($input, [
+            'product_id'=>'required',
+            'order_id'=>'required',
+            'price'=>'required',
+            'amount'=>'required',
+                ]);
+         if ($validator->fails()) {
+            return response(['error' => $validator->errors(), 'Validation Error']);
+         }
+         $orderItem = OrderItem::create($input);
+         return response()->json($orderItem);
     }
 
     /**
@@ -47,6 +64,7 @@ class OrderItemController extends Controller
     public function show(OrderItem $orderItem)
     {
         //
+        return response()->json($orderItem);
     }
 
     /**
@@ -70,6 +88,8 @@ class OrderItemController extends Controller
     public function update(Request $request, OrderItem $orderItem)
     {
         //
+        $orderItem->update($request->all());
+        return response()->json($orderItem);
     }
 
     /**
@@ -81,5 +101,7 @@ class OrderItemController extends Controller
     public function destroy(OrderItem $orderItem)
     {
         //
+        $orderItem->delete();
+        return response(['message' => 'Deleted']);
     }
 }

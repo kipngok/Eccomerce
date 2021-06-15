@@ -15,9 +15,6 @@ class Rider extends Model
     	return $this->hasOne('App\Models\User','id','user_id');
     }
 
-    public function place(){
-    	return $this->hasOne('App\Models\Place','id','place_id');
-    }
     public function deliveries(){
     	return $this->hasMany('App\Models\Delivery','rider_id','id');
     }

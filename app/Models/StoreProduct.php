@@ -9,8 +9,7 @@ class StoreProduct extends Model
 {
     use HasFactory;
     protected $table='store_products';
-    protected $fillable=['store_id', 'product_id', 'quantity
-'];
+    protected $fillable=['store_id', 'product_id', 'quantity'];
 
 public function store(){
 	return $this->hasOne('App\Models\Store','id','store_id');

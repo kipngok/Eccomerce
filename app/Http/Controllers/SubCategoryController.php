@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\SubCategory;
 use Illuminate\Http\Request;
+use App\Http\Resources\SubCategoryResource;
+use Illuminate\Support\Facades\Validator;
 
 class SubCategoryController extends Controller
 {
@@ -15,6 +17,8 @@ class SubCategoryController extends Controller
     public function index()
     {
         //
+       $subCategories = SubCategory::all();
+        return response(['subCategories' => SubCategoryResource::collection($subCategories), 'message' => 'Retrieved successfully']);
     }
 
     /**
@@ -36,6 +40,16 @@ class SubCategoryController extends Controller
     public function store(Request $request)
     {
         //
+        $input = $request->all(); 
+         $validator = Validator::make($input, [
+            'name'=>'required',
+            'slug'=>'required',
+                ]);
+         if ($validator->fails()) {
+            return response(['error' => $validator->errors(), 'Validation Error']);
+         }
+         $subCategory = SubCategory::create($input);
+         return response()->json($subCategory);
     }
 
     /**
@@ -47,6 +61,7 @@ class SubCategoryController extends Controller
     public function show(SubCategory $subCategory)
     {
         //
+         return response()->json($subCategory);
     }
 
     /**
@@ -70,6 +85,8 @@ class SubCategoryController extends Controller
     public function update(Request $request, SubCategory $subCategory)
     {
         //
+         $subCategory->update($request->all());
+         return response()->json($subCategory);
     }
 
     /**
@@ -81,5 +98,7 @@ class SubCategoryController extends Controller
     public function destroy(SubCategory $subCategory)
     {
         //
+        $subCategory->delete();
+        return response(['message' => 'Deleted']);
     }
 }

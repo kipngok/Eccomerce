@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Review;
 use Illuminate\Http\Request;
+use Auth;
+use App\Http\Resources\ReviewResource;
+use Illuminate\Support\Facades\Validator;
 
 class ReviewController extends Controller
 {
@@ -36,6 +39,12 @@ class ReviewController extends Controller
     public function store(Request $request)
     {
         //
+        $input=$request->all();
+        $input['user_id']=Auth::user()->id;
+        $review=Review::create($input);
+        $product=$review->product;
+        return response()->json($product);
+       
     }
 
     /**
